@@ -72,6 +72,27 @@ int main(int argc, char **argv)
 
 	printf("Serial port initialized.  Entering control loop\n");
 
+	unsigned char buffer[3];
+
+	while (1)
+	{
+		if (owi_serial_recv(buffer, 10000) == 3)
+		{
+			printf("Command received: %d %d %d\n", (int)buffer[0],
+					(int)buffer[1], (int)buffer[2]);
+
+			if (owi_send_command(buffer) < 0)
+			{
+				fprintf(stderr, "  Error sending command to arm\n");
+				perror("  owi_send_command");
+			}
+			else
+			{
+				printf("  Command successfully sent\n");
+			}
+		}
+	}
+
 	owi_cleanup();
 	owi_serial_close();
 

@@ -75,6 +75,19 @@ int owi_find_arm()
     return libusb_open(dev, &devh);
 }
 
+int owi_send_command(unsigned char *command)
+{
+    return libusb_control_transfer(devh,
+                                0x40, //uint8_t 	bmRequestType,
+                                6, //uint8_t 	bRequest,
+                                0x100, //uint16_t 	wValue,
+                                0,//uint16_t 	wIndex,
+                                command,
+                                0x03,
+                                0
+    );
+}
+
 void owi_cleanup()
 {
 	if (devh != NULL)
