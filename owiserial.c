@@ -18,6 +18,7 @@
 #include <termios.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <time.h>
 
 static int fd = -1;
 
@@ -32,7 +33,7 @@ int owi_serial_open(char *path)
 
 	tcgetattr(fd, &tio);
 
-	tio.c_cflag = B9600 | CS8 | CLOCAL | CREAD;		//<Set baud rate
+	tio.c_cflag = B9600 | CS8 | CLOCAL | CREAD;
 	tio.c_iflag = IGNPAR;
 	tio.c_oflag = 0;
 	tio.c_lflag = 0;
@@ -46,10 +47,52 @@ int owi_serial_open(char *path)
 
 int owi_serial_close()
 {
+	return close(fd);
+}
+
+
+static int data_available(int timeout_ms)
+{
+	fd_set rfds;
+	struct timeval tv;
+
+	FD_ZERO(&rfds);
+	FD_SET(fd, &rfds);
+
+	tv.tv_sec = 0;
+	tv.tv_usec = 1000 * timeout_ms;
+
+	int retval = select(fd + 1, &rfds, NULL, NULL, &tv);
+
+	if (retval == -1)
+		return -1;
+
+	if (FD_ISSET(fd, &rfds))
+		return 1;
+
 	return 0;
 }
 
-int owi_serial_open_send(unsigned char data1, unsigned char data2, unsigned char data3)
+int owi_serial_recv(unsigned char *buffer, unsigned int timeout_ms)
 {
+	int bytes_read = 0;
+	int bytes_in_buffer = 0;
+
+	while (1)
+	{
+		if (data_available(timeout_ms) <= 0)
+			return 0;
+
+		bytes_read = read(fd, buffer, 3 - bytes_in_buffer);
+
+		if (bytes_read < 0)
+			return bytes_read;
+
+		bytes_in_buffer += bytes_read;
+
+		if (bytes_in_buffer == 3)
+			return bytes_in_buffer;
+	}
+
 	return 0;
 }
