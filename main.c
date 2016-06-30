@@ -23,6 +23,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <ncurses.h>
 
 #include "owiarm.h"
 #include "owiserial.h"
@@ -75,6 +76,117 @@ int send_single_command(int argc, char **argv)
 
 int manual_control(int argc, char **argv)
 {
+	int control = 0;
+
+	initscr();
+	noecho();
+
+	while (1)
+	{
+		char command[3];
+		int send_command = 1;
+
+		memset(command, 0x0, 3);
+
+		int c = getch();
+
+		mvprintw(0, 0, "key press: %d\n", (int)c);
+
+		refresh();
+
+		switch (c)
+		{
+		// q: pincher
+		case 113:
+
+			command[0] = 0x01;
+			break;
+
+		// a: pincher
+		case 97:
+			command[0] = 0x02;
+			break;
+
+		// w: wrist
+		case 119:
+			command[0] = 0x04;
+			break;
+
+		// s: wrist
+		case 115:
+			command[0] = 0x08;
+			break;
+
+		// e: elbow
+		case 101:
+			command[0] = 0x10;
+			break;
+
+		// d: elbow
+		case 100:
+			command[0] = 0x20;
+			break;
+
+		// r: shoulder
+		case 114:
+			command[0] = 0x40;
+			break;
+
+		// f: shoulder
+		case 102:
+			command[0] = 0x80;
+			break;
+
+		// t: base
+		case 116:
+			command[1] = 0x01;
+			break;
+
+		// g: base
+		case 103:
+			command[1] = 0x02;
+			break;
+
+		// y: light
+		case 121:
+			command[2] = 0x01;
+			break;
+
+		// h: light
+		case 104:
+			command[2] = 0x00;
+			break;
+
+		default:
+			// send_command = 0;
+			break;
+		}
+
+		if (send_command)
+		{
+			if (owi_send_command(command) < 0)
+			{
+				fprintf(stderr, "  Error sending command to arm\n");
+				perror("  owi_send_command");
+
+				return -1;
+			}
+
+			usleep(250000);
+
+			memset(command, 0x0, 3);
+
+			if (owi_send_command(command) < 0)
+			{
+				fprintf(stderr, "  Error clearing command\n");
+				perror("  owi_send_command");
+
+				return -1;
+			}
+		}
+	}
+
+	endwin();
 
 	return 0;
 }

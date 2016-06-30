@@ -24,7 +24,7 @@ all: owiarmsrly
 	$(CC) -c -o $@ $< $(CFLAGS)
 	
 owiarmsrly: main.o owiarm.o owiserial.o
-	$(CC) -o owiarmsrly main.o owiarm.o owiserial.o -lusb-1.0
+	$(CC) -o owiarmsrly main.o owiarm.o owiserial.o -lusb-1.0 -lncurses
 	
 clean:
 	rm -f owiarmsrly *.o
