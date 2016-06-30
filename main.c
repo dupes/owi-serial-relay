@@ -22,6 +22,7 @@
 #include <stdio.h>
 
 #include "owiarm.h"
+#include "owiserial.h"
 
 void printusage(char *program)
 {
@@ -60,9 +61,19 @@ int main(int argc, char **argv)
 		}
 	}
 
-	printf("AMR located\n");
+	printf("ARM located.  Initializing serial port\n");
+
+	if (owi_serial_open(argv[1]) != 0)
+	{
+		fprintf(stderr, "Failed to open serial port: %s\n", argv[1]);
+		perror("owi_serial_open");
+		return -1;
+	}
+
+	printf("Serial port initialized.  Entering control loop\n");
 
 	owi_cleanup();
+	owi_serial_close();
 
 	return 0;
 }
