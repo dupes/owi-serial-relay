@@ -99,8 +99,6 @@ int manual_control(int argc, char **argv)
 
 		int c = getch();
 
-		mvprintw(0, 0, "key press: %d\n", (int)c);
-
 		refresh();
 
 		switch (c)
@@ -108,56 +106,67 @@ int manual_control(int argc, char **argv)
 		// q: pincher
 		case 113:
 
+			mvprintw(0, 0, "key press pincher close: %d\n", (int)c);
 			command[0] = 0x01;
 			break;
 
 		// a: pincher
 		case 97:
+			mvprintw(0, 0, "key press pincher open: %d\n", (int)c);
 			command[0] = 0x02;
 			break;
 
 		// w: wrist
 		case 119:
+			mvprintw(0, 0, "key press wrist up: %d\n", (int)c);
 			command[0] = 0x04;
 			break;
 
 		// s: wrist
 		case 115:
+			mvprintw(0, 0, "key press wrist down: %d\n", (int)c);
 			command[0] = 0x08;
 			break;
 
 		// e: elbow
 		case 101:
+			mvprintw(0, 0, "key press elbow up: %d\n", (int)c);
 			command[0] = 0x10;
 			break;
 
 		// d: elbow
 		case 100:
+			mvprintw(0, 0, "key press elbow down: %d\n", (int)c);
 			command[0] = 0x20;
 			break;
 
 		// r: shoulder
 		case 114:
+			mvprintw(0, 0, "key press shoulder up: %d\n", (int)c);
 			command[0] = 0x40;
 			break;
 
 		// f: shoulder
 		case 102:
+			mvprintw(0, 0, "key press shoulder down: %d\n", (int)c);
 			command[0] = 0x80;
 			break;
 
 		// t: base
 		case 116:
+			mvprintw(0, 0, "key press base clockwise: %d\n", (int)c);
 			command[1] = 0x01;
 			break;
 
 		// g: base
 		case 103:
+			mvprintw(0, 0, "key press base counterclockwise: %d\n", (int)c);
 			command[1] = 0x02;
 			break;
 
 		// y: light
 		case 121:
+			mvprintw(0, 0, "key press blink light: %d\n", (int)c);
 			command[2] = 0x01;
 			break;
 
