@@ -73,6 +73,12 @@ int send_single_command(int argc, char **argv)
 	return 0;
 }
 
+int manual_control(int argc, char **argv)
+{
+
+	return 0;
+}
+
 int main(int argc, char **argv)
 {
 	int retval;
@@ -112,8 +118,14 @@ int main(int argc, char **argv)
 	if (strcmp(argv[1], "command") == 0)
 	{
 		return send_single_command(argc, argv);
+	}
 
-		return 0;
+	//
+	// send a single command to the arm
+	//
+	if (strcmp(argv[1], "manual") == 0)
+	{
+		return manual_control(argc, argv);
 	}
 
 	//
@@ -126,6 +138,7 @@ int main(int argc, char **argv)
 	{
 		fprintf(stderr, "Failed to open serial port: %s\n", argv[1]);
 		perror("owi_serial_open");
+
 		return -1;
 	}
 
