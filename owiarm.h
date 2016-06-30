@@ -27,6 +27,7 @@
 int owi_init_usb(int debug_level);
 int owi_find_arm();
 int owi_send_command(unsigned char *command);
+int owi_send_command2(unsigned char data1, unsigned char data2, unsigned char data3);
 void owi_cleanup();
 
 #endif

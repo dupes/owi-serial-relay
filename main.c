@@ -20,21 +20,64 @@
  */
 
 #include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <unistd.h>
 
 #include "owiarm.h"
 #include "owiserial.h"
 
 void printusage(char *program)
 {
+	printf("Parameters missing\n");
+	printf("  Usage: %s /dev/tty*\n\n", program);
+
 	printf("Missing path to FTDI serial relay port\n");
-	printf("  Usage: %s /dev/tty*\n", program);
+	printf("  Usage: %s command byte1 byte2 byte3\n", program);
+}
+
+int send_single_command(int argc, char **argv)
+{
+	if (argc != 5)
+	{
+		printusage(argv[0]);
+		return -1;
+	}
+
+	unsigned char command[3];
+
+	command[0] = (unsigned char)strtol(argv[2], NULL, 16);
+	command[1] = (unsigned char)strtol(argv[3], NULL, 16);
+	command[2] = (unsigned char)strtol(argv[4], NULL, 16);
+
+	if (owi_send_command(command) < 0)
+	{
+		fprintf(stderr, "  Error sending command to arm\n");
+		perror("  owi_send_command");
+
+		return -1;
+	}
+
+	sleep(1);
+
+	memset(command, 0x0, 3);
+
+	if (owi_send_command(command) < 0)
+	{
+		fprintf(stderr, "  Error clearing command\n");
+		perror("  owi_send_command");
+
+		return -1;
+	}
+
+	return 0;
 }
 
 int main(int argc, char **argv)
 {
 	int retval;
 
-	if (argc != 2)
+	if (argc == 1)
 	{
 		printusage(argv[0]);
 
@@ -61,7 +104,23 @@ int main(int argc, char **argv)
 		}
 	}
 
-	printf("ARM located.  Initializing serial port\n");
+	printf("ARM located\n");
+
+	//
+	// send a single command to the arm
+	//
+	if (strcmp(argv[1], "command") == 0)
+	{
+		return send_single_command(argc, argv);
+
+		return 0;
+	}
+
+	//
+	// continually relay commands to the arm over the serial port
+	//
+
+	printf("Initializing serial port\n");
 
 	if (owi_serial_open(argv[1]) != 0)
 	{

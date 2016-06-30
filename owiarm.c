@@ -88,6 +88,17 @@ int owi_send_command(unsigned char *command)
     );
 }
 
+int owi_send_command2(unsigned char data1, unsigned char data2, unsigned char data3)
+{
+	unsigned char command[3];
+
+	command[0] = data1;
+	command[1] = data2;
+	command[2] = data3;
+
+	return owi_send_command(command);
+}
+
 void owi_cleanup()
 {
 	if (devh != NULL)
