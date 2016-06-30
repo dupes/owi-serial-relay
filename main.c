@@ -30,11 +30,18 @@
 
 void printusage(char *program)
 {
-	printf("Parameters missing\n");
+	printf("Parameters missing\n\n");
+
+	printf("Relay mode:\n");
 	printf("  Usage: %s /dev/tty*\n\n", program);
 
-	printf("Missing path to FTDI serial relay port\n");
+	printf("Single command mode:\n");
 	printf("  Usage: %s command byte1 byte2 byte3\n", program);
+	printf("  See: http://notbrainsurgery.livejournal.com/38622.html\n\n");
+
+	printf("Manual mode\n");
+	printf("  Usage: %s manual\n", program);
+	printf("  Use the keyboard to control the arm\n\n");
 }
 
 int send_single_command(int argc, char **argv)
@@ -80,6 +87,8 @@ int manual_control(int argc, char **argv)
 
 	initscr();
 	noecho();
+
+	mvprintw(1, 0, "Manual mode:\n  (q, a): pincher\n  (w, s): wrist\n  (e, d): elbow\n  (r, f): shoulder\n  (t, g): base\n  (y): light\n\n Warning!! DO NOT HOLD THE KEYS DOWN\n");
 
 	while (1)
 	{
