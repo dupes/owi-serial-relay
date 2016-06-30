@@ -23,9 +23,22 @@
 
 #include "owiarm.h"
 
-int main()
+void printusage(char *program)
+{
+	printf("Missing path to FTDI serial relay port\n");
+	printf("  Usage: %s /dev/tty*\n", program);
+}
+
+int main(int argc, char **argv)
 {
 	int retval;
+
+	if (argc != 2)
+	{
+		printusage(argv[0]);
+
+		return -1;
+	}
 
 	if (owi_init_usb(LIBUSB_LOG_LEVEL_ERROR) != 0)
 	{
@@ -40,7 +53,14 @@ int main()
 			fprintf(stderr, "ARM not found\n");
 			return -1;
 		}
+		else
+		{
+			perror("owi_find_arm");
+			return -1;
+		}
 	}
+
+	printf("AMR located\n");
 
 	owi_cleanup();
 
