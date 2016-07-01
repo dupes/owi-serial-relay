@@ -73,7 +73,7 @@ static int data_available(int timeout_ms)
 	return 0;
 }
 
-int owi_serial_recv(unsigned char *buffer, unsigned int timeout_ms)
+int owi_serial_recv(unsigned char *buffer, unsigned int buffer_size, unsigned int timeout_ms)
 {
 	int bytes_read = 0;
 	int bytes_in_buffer = 0;
@@ -83,14 +83,14 @@ int owi_serial_recv(unsigned char *buffer, unsigned int timeout_ms)
 		if (data_available(timeout_ms) <= 0)
 			return 0;
 
-		bytes_read = read(fd, buffer, 3 - bytes_in_buffer);
+		bytes_read = read(fd, buffer, buffer_size - bytes_in_buffer);
 
 		if (bytes_read < 0)
 			return bytes_read;
 
 		bytes_in_buffer += bytes_read;
 
-		if (bytes_in_buffer == 3)
+		if (bytes_in_buffer == buffer_size)
 			return bytes_in_buffer;
 	}
 

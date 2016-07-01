@@ -274,16 +274,16 @@ int main(int argc, char **argv)
 
 	printf("Serial port initialized.  Entering control loop\n");
 
-	unsigned char buffer[3];
+	unsigned char buffer[4];
 
 	while (1)
 	{
 		int num_bytes;
 
-		if ((num_bytes = owi_serial_recv(buffer, 10000)) == 3)
+		if ((num_bytes = owi_serial_recv(buffer, sizeof(buffer), 10000)) == sizeof(buffer))
 		{
-			printf("Command received: %d %d %d\n", (int)buffer[0],
-					(int)buffer[1], (int)buffer[2]);
+			printf("Command received: %d %d %d, count: %d\n", (int)buffer[0],
+					(int)buffer[1], (int)buffer[2], (int)buffer[3]);
 
 			if (owi_send_command(buffer) < 0)
 			{

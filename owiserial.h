@@ -19,6 +19,6 @@
 
 int owi_serial_open(char *path);
 int owi_serial_close();
-int owi_serial_recv(unsigned char *buffer, unsigned int timeout_ms);
+int owi_serial_recv(unsigned char *buffer, unsigned int buffer_size, unsigned int timeout_ms);
 
 #endif
