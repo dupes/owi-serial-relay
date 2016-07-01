@@ -278,7 +278,9 @@ int main(int argc, char **argv)
 
 	while (1)
 	{
-		if (owi_serial_recv(buffer, 10000) == 3)
+		int num_bytes;
+
+		if ((num_bytes = owi_serial_recv(buffer, 10000)) == 3)
 		{
 			printf("Command received: %d %d %d\n", (int)buffer[0],
 					(int)buffer[1], (int)buffer[2]);
@@ -292,6 +294,10 @@ int main(int argc, char **argv)
 			{
 				printf("  Command successfully sent\n");
 			}
+		}
+		else
+		{
+			printf("invalid command received: %d\n", num_bytes);
 		}
 	}
 
