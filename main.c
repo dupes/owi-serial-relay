@@ -33,7 +33,8 @@ void printusage(char *program)
 	printf("Parameters missing\n\n");
 
 	printf("Relay mode:\n");
-	printf("  Usage: %s /dev/tty*\n\n", program);
+	printf("  Usage: %s /dev/tty* [--dry-run]\n", program);
+	printf("  Add --dry-run if you don't want commands sent to the robot\n\n");
 
 	printf("Single command mode:\n");
 	printf("  Usage: %s command byte1 byte2 byte3\n", program);
@@ -251,7 +252,7 @@ int main(int argc, char **argv)
 	}
 
 	//
-	// send a single command to the arm
+	// manually control arm with keyboard
 	//
 	if (strcmp(argv[1], "manual") == 0)
 	{
@@ -259,7 +260,7 @@ int main(int argc, char **argv)
 	}
 
 	//
-	// continually relay commands to the arm over the serial port
+	// continually relay commands to the received over the serial port
 	//
 
 	printf("Initializing serial port\n");
@@ -270,6 +271,14 @@ int main(int argc, char **argv)
 		perror("owi_serial_open");
 
 		return -1;
+	}
+
+	int dry_run = 0;
+
+	if (argc == 3 && strcmp(argv[2], "--dry-run") == 0)
+	{
+		printf("Commands won't be relayed to the arm\n");
+		dry_run = 1;
 	}
 
 	printf("Serial port initialized.  Entering control loop\n");
@@ -285,14 +294,17 @@ int main(int argc, char **argv)
 			printf("Command received: %d %d %d, count: %d\n", (int)buffer[0],
 					(int)buffer[1], (int)buffer[2], (int)buffer[3]);
 
-			if (owi_send_command(buffer) < 0)
+			if (!dry_run)
 			{
-				fprintf(stderr, "  Error sending command to arm\n");
-				perror("  owi_send_command");
-			}
-			else
-			{
-				printf("  Command successfully sent\n");
+				if (owi_send_command(buffer) < 0)
+				{
+					fprintf(stderr, "  Error sending command to arm\n");
+					perror("  owi_send_command");
+				}
+				else
+				{
+					printf("  Command successfully sent\n");
+				}
 			}
 		}
 		else
