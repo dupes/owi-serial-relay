@@ -96,3 +96,13 @@ int owi_serial_recv(unsigned char *buffer, unsigned int buffer_size, unsigned in
 
 	return 0;
 }
+
+void owi_serial_flush()
+{
+	char buffer[128];
+
+	while (data_available(2000))
+	{
+		read(fd, buffer, sizeof(buffer));
+	}
+}

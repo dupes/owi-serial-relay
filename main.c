@@ -285,6 +285,8 @@ int main(int argc, char **argv)
 
 	unsigned char buffer[4];
 
+	owi_serial_flush();
+
 	while (1)
 	{
 		int num_bytes;
