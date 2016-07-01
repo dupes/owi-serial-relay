@@ -83,7 +83,7 @@ int owi_serial_recv(unsigned char *buffer, unsigned int buffer_size, unsigned in
 		if (data_available(timeout_ms) <= 0)
 			return 0;
 
-		bytes_read = read(fd, buffer, buffer_size - bytes_in_buffer);
+		bytes_read = read(fd, buffer + bytes_in_buffer, buffer_size - bytes_in_buffer);
 
 		if (bytes_read < 0)
 			return bytes_read;
