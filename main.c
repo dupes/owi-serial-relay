@@ -277,7 +277,7 @@ int main(int argc, char **argv)
 
 	if (argc == 3 && strcmp(argv[2], "--dry-run") == 0)
 	{
-		printf("Commands won't be relayed to the arm\n");
+		printf("*** Running in dry run mode: commands won't be relayed to the arm ***\n");
 		dry_run = 1;
 	}
 
