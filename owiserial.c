@@ -33,7 +33,7 @@ int owi_serial_open(char *path)
 
 	tcgetattr(fd, &tio);
 
-	tio.c_cflag = B115200 | CS8 | CLOCAL | CREAD;
+	tio.c_cflag = B9600 | CS8 | CLOCAL | CREAD;
 	tio.c_iflag = IGNPAR;
 	tio.c_oflag = 0;
 	tio.c_lflag = 0;
