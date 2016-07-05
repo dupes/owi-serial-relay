@@ -101,7 +101,7 @@ void owi_serial_flush()
 {
 	char buffer[128];
 
-	while (data_available(2000))
+	while (data_available(1200))
 	{
 		read(fd, buffer, sizeof(buffer));
 	}
